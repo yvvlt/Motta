@@ -2,7 +2,14 @@ import { FaMoon, FaSearch } from "react-icons/fa";
 
 import { motion } from "framer-motion";
 
-function Header({ setSearch, setFilter, toggleDark, user, handleLogout }) {
+function Header({
+  setSearch,
+  setFilter,
+  toggleDark,
+  user,
+  handleLogout,
+  handleLogin,
+}) {
   return (
     <motion.header
       initial={{
@@ -49,7 +56,7 @@ function Header({ setSearch, setFilter, toggleDark, user, handleLogout }) {
             <button onClick={handleLogout}>로그아웃</button>
           </div>
         ) : (
-          <button>로그인</button>
+          <button onClick={handleLogin}>로그인</button>
         )}
       </div>
     </motion.header>

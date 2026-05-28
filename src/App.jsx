@@ -85,6 +85,12 @@ function App() {
     alert("로그아웃 완료!");
   };
 
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+  };
+
   /* =======================================================
       레시피 불러오기
   ======================================================= */
@@ -221,6 +227,7 @@ function App() {
         toggleDark={() => setDarkMode(!darkMode)}
         user={user}
         handleLogout={handleLogout}
+        handleLogin={handleLogin}
       />
 
       {/* Banner */}
