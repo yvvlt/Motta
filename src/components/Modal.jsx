@@ -1,24 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+
+import { supabase } from "../supabase";
 
 function Modal({ recipe, onClose }) {
   const [comments, setComments] = useState([]);
+
   const [input, setInput] = useState("");
 
-  const addComment = () => {
+  /* =========================
+      댓글 불러오기
+  ========================= */
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+  const fetchComments = async () => {
+    const { data, error } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("recipe_id", recipe.id)
+      .order("created_at", {
+        ascending: false,
+      });
+
+    if (error) {
+      console.log(error);
+    } else {
+      setComments(data);
+    }
+  };
+
+  /* =========================
+      댓글 추가
+  ========================= */
+
+  const addComment = async () => {
     if (!input) return;
 
-    setComments([...comments, input]);
-    setInput("");
+    const { error } = await supabase.from("comments").insert([
+      {
+        recipe_id: recipe.id,
+
+        content: input,
+      },
+    ]);
+
+    if (error) {
+      console.log(error);
+    } else {
+      setInput("");
+
+      fetchComments();
+    }
   };
 
   return (
     <motion.div
       className="modal"
       onClick={onClose}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
     >
       <motion.div
         className="modal-content"
@@ -47,6 +97,8 @@ function Modal({ recipe, onClose }) {
 
         <p>⏰ 조리시간: 30분</p>
 
+        {/* 댓글 입력 */}
+
         <textarea
           placeholder="댓글 입력..."
           value={input}
@@ -57,9 +109,11 @@ function Modal({ recipe, onClose }) {
           댓글 등록
         </button>
 
-        <ul>
-          {comments.map((comment, i) => (
-            <li key={i}>{comment}</li>
+        {/* 댓글 목록 */}
+
+        <ul className="comment-list">
+          {comments.map((comment) => (
+            <li key={comment.id}>{comment.content}</li>
           ))}
         </ul>
       </motion.div>

@@ -1,29 +1,18 @@
 import { FaMoon, FaSearch } from "react-icons/fa";
+
 import { motion } from "framer-motion";
-import { supabase } from "../supabase";
 
-function Header({ setSearch, setFilter, toggleDark }) {
-  // 이메일 로그인
-  const login = async () => {
-    const email = prompt("이메일 입력");
-
-    if (!email) return;
-
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-    });
-
-    if (error) {
-      alert("로그인 실패");
-    } else {
-      alert("이메일을 확인해주세요!");
-    }
-  };
-
+function Header({ setSearch, setFilter, toggleDark, user, handleLogout }) {
   return (
     <motion.header
-      initial={{ opacity: 0, y: -30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{
+        opacity: 0,
+        y: -30,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
     >
       <h1>☕ 모두의 따뜻한 레시피</h1>
 
@@ -48,13 +37,20 @@ function Header({ setSearch, setFilter, toggleDark }) {
           />
         </div>
 
-        {/* 로그인 버튼 */}
-        <button onClick={login}>로그인</button>
-
-        {/* 다크모드 버튼 */}
         <button onClick={toggleDark}>
           <FaMoon />
         </button>
+
+        {/* 로그인 상태 */}
+        {user ? (
+          <div className="user-box">
+            <span>{user.email}</span>
+
+            <button onClick={handleLogout}>로그아웃</button>
+          </div>
+        ) : (
+          <button>로그인</button>
+        )}
       </div>
     </motion.header>
   );
