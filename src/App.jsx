@@ -64,6 +64,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
+  const [showUpload, setShowUpload] = useState(false);
+
+  const [newRecipe, setNewRecipe] = useState({
+    title: "",
+    category: "cake",
+    image: "",
+  });
+
   const filteredRecipes = recipes.filter((recipe) => {
     return (
       recipe.title.includes(search) &&
@@ -77,6 +85,31 @@ function App() {
         recipe.id === id ? { ...recipe, likes: recipe.likes + 1 } : recipe,
       ),
     );
+  };
+
+  const addRecipe = () => {
+    if (!newRecipe.title || !newRecipe.image) {
+      alert("모든 항목 입력!");
+      return;
+    }
+
+    const recipe = {
+      id: Date.now(),
+      title: newRecipe.title,
+      category: newRecipe.category,
+      image: newRecipe.image,
+      likes: 0,
+    };
+
+    setRecipes([recipe, ...recipes]);
+
+    setNewRecipe({
+      title: "",
+      category: "cake",
+      image: "",
+    });
+
+    setShowUpload(false);
   };
 
   useEffect(() => {
@@ -117,6 +150,12 @@ function App() {
       {/* Hero Banner */}
       <Banner />
 
+      <div className="upload-wrapper">
+        <button className="upload-open-btn" onClick={() => setShowUpload(true)}>
+          + 레시피 추가
+        </button>
+      </div>
+
       {/* Section Title */}
       <div className="section-title">
         <h2>✨ 인기 레시피</h2>
@@ -144,6 +183,56 @@ function App() {
           />
         )}
       </AnimatePresence>
+
+      {showUpload && (
+        <div className="modal" onClick={() => setShowUpload(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>새 레시피 업로드 ✨</h2>
+
+            <input
+              type="text"
+              placeholder="레시피 이름"
+              value={newRecipe.title}
+              onChange={(e) =>
+                setNewRecipe({
+                  ...newRecipe,
+                  title: e.target.value,
+                })
+              }
+            />
+
+            <select
+              value={newRecipe.category}
+              onChange={(e) =>
+                setNewRecipe({
+                  ...newRecipe,
+                  category: e.target.value,
+                })
+              }
+            >
+              <option value="cake">케이크</option>
+              <option value="coffee">커피</option>
+              <option value="dessert">디저트</option>
+            </select>
+
+            <input
+              type="text"
+              placeholder="이미지 URL"
+              value={newRecipe.image}
+              onChange={(e) =>
+                setNewRecipe({
+                  ...newRecipe,
+                  image: e.target.value,
+                })
+              }
+            />
+
+            <button className="comment-btn" onClick={addRecipe}>
+              업로드
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
