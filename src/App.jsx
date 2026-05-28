@@ -39,6 +39,7 @@ function App() {
     title: "",
     category: "cake",
     image: "",
+    description: "",
   });
 
   /* ---------------- AUTH ---------------- */
@@ -148,7 +149,7 @@ function App() {
   ======================================================= */
 
   const addRecipe = async () => {
-    if (!newRecipe.title || !newRecipe.image) {
+    if (!newRecipe.title || !newRecipe.image || !newRecipe.description) {
       alert("모든 항목 입력!");
       return;
     }
@@ -160,6 +161,8 @@ function App() {
         category: newRecipe.category,
 
         image: newRecipe.image,
+
+        description: newRecipe.description,
 
         likes: 0,
       },
@@ -178,6 +181,7 @@ function App() {
         title: "",
         category: "cake",
         image: "",
+        description: "",
       });
 
       setShowUpload(false);
@@ -345,6 +349,17 @@ function App() {
                 setNewRecipe({
                   ...newRecipe,
                   image: e.target.value,
+                })
+              }
+            />
+
+            <textarea
+              placeholder="레시피 설명 / 만드는 방법"
+              value={newRecipe.description}
+              onChange={(e) =>
+                setNewRecipe({
+                  ...newRecipe,
+                  description: e.target.value,
                 })
               }
             />

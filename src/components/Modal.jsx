@@ -95,7 +95,7 @@ function Modal({ recipe, onClose }) {
 
         <h2>{recipe.title}</h2>
 
-        <p>⏰ 조리시간: 30분</p>
+        <p>{recipe.description}</p>
 
         {/* 댓글 입력 */}
 
