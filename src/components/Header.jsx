@@ -1,5 +1,4 @@
 import { FaMoon, FaSearch } from "react-icons/fa";
-
 import { motion } from "framer-motion";
 
 function Header({
@@ -7,21 +6,17 @@ function Header({
   setFilter,
   toggleDark,
   user,
-  handleLogout,
   handleLogin,
+  handleLogout,
 }) {
   return (
     <motion.header
-      initial={{
-        opacity: 0,
-        y: -30,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
+      initial={{ opacity: 0, y: -30 }}
+      animate={{ opacity: 1, y: 0 }}
     >
       <h1>☕ 모두의 따뜻한 레시피</h1>
+
+      {/* CATEGORY */}
 
       <nav>
         <button onClick={() => setFilter("all")}>전체</button>
@@ -33,7 +28,11 @@ function Header({
         <button onClick={() => setFilter("dessert")}>디저트</button>
       </nav>
 
+      {/* CONTROLS */}
+
       <div className="controls">
+        {/* SEARCH */}
+
         <div className="search-box">
           <FaSearch />
 
@@ -44,17 +43,16 @@ function Header({
           />
         </div>
 
+        {/* DARK MODE */}
+
         <button onClick={toggleDark}>
           <FaMoon />
         </button>
 
-        {/* 로그인 상태 */}
-        {user ? (
-          <div className="user-box">
-            <span>{user.email}</span>
+        {/* LOGIN */}
 
-            <button onClick={handleLogout}>로그아웃</button>
-          </div>
+        {user ? (
+          <button onClick={handleLogout}>로그아웃</button>
         ) : (
           <button onClick={handleLogin}>로그인</button>
         )}

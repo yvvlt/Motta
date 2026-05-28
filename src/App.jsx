@@ -29,6 +29,8 @@ function App() {
 
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
+  const [user, setUser] = useState(null);
+
   /* ---------------- UPLOAD ---------------- */
 
   const [showUpload, setShowUpload] = useState(false);
@@ -40,8 +42,6 @@ function App() {
   });
 
   /* ---------------- AUTH ---------------- */
-
-  const [user, setUser] = useState(null);
 
   /* =======================================================
       로그인 상태 확인
@@ -86,9 +86,21 @@ function App() {
   };
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
+    const email = prompt("로그인할 이메일을 입력하세요");
+
+    if (!email) return;
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
     });
+
+    if (error) {
+      console.log(error);
+
+      alert("로그인 실패");
+    } else {
+      alert("이메일로 로그인 링크를 보냈어요!");
+    }
   };
 
   /* =======================================================
@@ -205,6 +217,22 @@ function App() {
     window.addEventListener("mousemove", moveBlob);
 
     return () => window.removeEventListener("mousemove", moveBlob);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      },
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   /* =======================================================
